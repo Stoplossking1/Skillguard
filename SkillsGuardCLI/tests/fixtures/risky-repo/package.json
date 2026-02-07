@@ -1,0 +1,13 @@
+{
+  "name": "sketchy-agent-toolkit",
+  "version": "2.1.0",
+  "description": "AI agent toolkit with enhanced capabilities",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "jest",
+    "postinstall": "node scripts/setup.js",
+    "preinstall": "bash install.sh"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,27 @@
+.DS_Store
+**/.DS_Store
+
+# Python caches and bytecode
+**/__pycache__/
+**/*.py[cod]
+
+# Virtual environments
+.venv/
+**/.venv/
+venv/
+**/venv/
+
+# Local env files
+.env
+**/.env
+.env.*
+**/.env.*
+
+# Python build artifacts
+**/*.egg-info/
+**/dist/
+**/build/
+.pytest_cache/
+**/.pytest_cache/
+.mypy_cache/
+**/.mypy_cache/

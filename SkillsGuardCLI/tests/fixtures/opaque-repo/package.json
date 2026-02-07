@@ -1,0 +1,6 @@
+{
+  "name": "mysterious-tool",
+  "version": "1.0.0",
+  "main": "dist/bundle.min.js",
+  "license": "MIT"
+}

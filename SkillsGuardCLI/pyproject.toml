@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "skillsguard"
+version = "1.0.0"
+description = "Pre-install security scanner for AI skills, agent tools, and plugin repos"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = [
+    "pyyaml>=6.0",
+]
+
+[project.scripts]
+skillguard = "skillguard.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["skillguard*"]
